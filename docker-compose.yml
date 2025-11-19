@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: kratos
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: kratos
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kratos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  kratos-migrate:
+    image: oryd/kratos:v25.4.0
+    command:
+      - migrate
+      - sql
+      - postgres://kratos:supersecret@db:5432/kratos?sslmode=disable
+      - --yes
+    environment:
+      DSN: postgres://kratos:supersecret@db:5432/kratos?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  kratos:
+    image: oryd/kratos:v25.4.0
+    command:
+      - serve
+      - --config
+      - /etc/config/kratos/kratos.yml
+    volumes:
+      - ./contrib/quickstart/kratos/email-password/kratos.yml:/etc/config/kratos/kratos.yml:ro
+      - ./contrib/quickstart/kratos/email-password/identity.schema.json:/etc/config/kratos/identity.schema.json:ro
+    environment:
+      DSN: postgres://kratos:supersecret@db:5432/kratos?sslmode=disable
+    ports:
+      - "4433:4433" # public endpoint
+      - "4434:4434" # admin endpoint
+    depends_on:
+      kratos-migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
