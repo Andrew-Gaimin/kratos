@@ -1,6 +1,6 @@
 version: v0.13.0
 
-dsn: memory
+dsn: mysql://root@tcp(127.0.0.1:4000)/kratos?clientFoundRows=true&multiStatements=true&parseTime=true
 
 serve:
   public:
