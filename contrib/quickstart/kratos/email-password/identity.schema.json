@@ -38,10 +38,19 @@
               "type": "string"
             }
           }
+        },
+        "accepted_terms": {
+          "type": "boolean",
+          "title": "By signing up, you agree to our Privacy Policy and End User License Agreement (EULA)"
+        },
+        "newsletter_subscription": {
+          "type": "boolean",
+          "title": "Subscribe to GAIMIN’s newsletter"
         }
       },
       "required": [
-        "email"
+        "email",
+        "accepted_terms"
       ],
       "additionalProperties": false
     }
