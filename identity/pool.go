@@ -22,7 +22,6 @@ func NewUpdateIdentityOptions(opts []UpdateIdentityModifier) UpdateIdentityOptio
 	return o
 }
 
-// DiffAgainst sets the identity as it is stored in the database before the update.
 // DiffAgainst instructs UpdateIdentity to attempt a minimal update of the
 // identity's data in the database by computing a diff against `existing` and
 // only updating what is necessary, rather than bulk-replacing everything. Use
@@ -143,7 +142,7 @@ type (
 		InjectTraitsSchemaURL(ctx context.Context, i *Identity) error
 
 		// FindIdentityByCredentialIdentifier returns an identity by matching the identifier to any of the identity's credentials.
-		FindIdentityByCredentialIdentifier(ctx context.Context, identifier string, caseSensitive bool) (*Identity, error)
+		FindIdentityByCredentialIdentifier(ctx context.Context, identifier string, caseSensitive bool, expandables Expandables) (*Identity, error)
 
 		// FindIdentityByWebauthnUserHandle returns an identity matching a webauthn user handle.
 		FindIdentityByWebauthnUserHandle(ctx context.Context, userHandle []byte) (*Identity, error)
